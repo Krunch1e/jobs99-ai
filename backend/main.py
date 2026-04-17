@@ -9,6 +9,7 @@ import pandas as pd
 
 
 # Import your new modules
+from backend.main import app
 from . import models, schemas
 from .database import SessionLocal, engine
 from .ai import parser, tailor, matcher, cover_letter
