@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Job Seeker Dashboard</title>
+<style>
+:root {
+  --primary: #1E3A8A; /* Deep Blue */
+  --secondary: #3B82F6; /* Sky Blue */
+  --bg: #f6f8fa; /* Light background */
+  --text: #333;
+}
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  color: var(--text);
+  overflow-x: hidden;
+  position: relative;
+}
+header {
+  background: var(--primary);
+  color: white;
+  padding: 15px 20px;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+header h1 { margin: 0; font-size: 1.5rem; font-weight: bold; }
+nav a {
+  color: white; margin-left: 20px; text-decoration: none; font-weight: 600;
+  position: relative; padding-bottom: 4px; transition: color 0.3s ease;
+}
+nav a.active, nav a:hover { color: var(--secondary); }
+nav a::after {
+  content: ""; position: absolute; left: 0; bottom: 0;
+  width: 0%; height: 2px; background: var(--secondary);
+  transition: width 0.3s ease;
+}
+nav a:hover::after, nav a.active::after { width: 100%; }
+main { 
+  max-width: 1100px; 
+  margin: auto; 
+  padding: 20px; 
+  padding-bottom: 120px; 
+  transition: padding-bottom 0.4s ease; 
+  min-height: 100vh;
+}
+section {
+  display: none;
+  background: white;
+  border-radius: 10px; padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  animation: fadeIn 0.5s ease forwards;
+}
+section.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+.job-card {
+  display: flex; gap: 12px; padding: 15px; margin-bottom: 12px;
+  border: 1px solid #eee; border-radius: 8px; background: #fff;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.job-card.selected {
+  border-color: var(--secondary);
+  background: #f0f9ff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.job-card input[type="checkbox"] {
+  margin-top: 4px;
+  transform: scale(1.2);
+  accent-color: var(--secondary);
+}
+.job-card:hover {
+  background: #f0f9ff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transform: translateY(-3px);
+}
+
+#bulk-bar button {
+  background: white; color: var(--primary);
+  padding: 8px 16px; border-radius: 6px; border: none;
+  font-weight: bold; cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+#bulk-bar button:hover {
+  background: var(--secondary); color: white; transform: scale(1.05);
+}
+#tracker-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+#tracker-table th, #tracker-table td {
+  border: 1px solid #ddd; padding: 10px; text-align: left;
+}
+#tracker-table th { background: #f0f4ff; }
+#tracker-table tr:hover { background: #f9fbff; }
+.status {
+  padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85em;
+}
+.status.sent { background: #dbeafe; color: var(--primary); }
+form input, form select {
+  padding: 8px; width: 100%; margin-top: 5px;
+  border-radius: 6px; border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+form input:focus, form select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+form button {
+  margin-top: 12px; padding: 10px;
+  background: var(--primary); color: white;
+  font-weight: bold; border: none; border-radius: 6px;
+  transition: background 0.3s ease;
+}
+form button:hover { background: var(--secondary); }
+
+/* Alert Section Styles */
+.alerts-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.alerts-header h2 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.alerts-subtitle {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.alerts-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.alerts-form-card, .alerts-preview-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.alerts-form-card h3, .alerts-preview-card h3 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.label-icon {
+  font-size: 1.2rem;
+}
+
+.required {
+  color: #e53e3e;
+  font-weight: bold;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.help-text {
+  display: block;
+  margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.checkbox-item:hover {
+  border-color: var(--secondary);
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+.checkbox-item input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e0;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-item input[type="checkbox"]:checked + .checkmark {
+  background: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.checkbox-item input[type="checkbox"]:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.save-alerts-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.save-alerts-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.save-alerts-btn:active {
+  transform: translateY(0);
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+.settings-preview {
+  min-height: 200px;
+}
+
+.no-settings {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.no-settings-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-settings p {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.no-settings small {
+  color: #888;
+}
+
+.settings-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.settings-item-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: var(--secondary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-item-content h4 {
+  margin: 0 0 0.3rem 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.settings-item-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.alert-confirm {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  z-index: 1000;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+  max-width: 350px;
+}
+
+.alert-confirm.show {
+  transform: translateX(0);
+}
+
+.alert-confirm.success {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+}
+
+.alert-confirm.error {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+}
+
+/* Bulk Apply Section Styles */
+.bulk-header, .tracker-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.bulk-header h2, .tracker-header h2 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.bulk-subtitle, .tracker-subtitle {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.bulk-stats, .tracker-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-content h3 {
+  margin: 0 0 0.3rem 0;
+  color: var(--primary);
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.stat-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.job-filters, .tracker-filters {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.filter-group input, .filter-group select {
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.filter-group input:focus, .filter-group select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.jobs-container, .tracker-container {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  margin-bottom: 2rem;
+}
+
+.job-card {
+  display: flex;
+  gap: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.job-card:hover {
+  border-color: var(--secondary);
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.job-card.selected {
+  border-color: var(--secondary);
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+}
+
+.job-card input[type="checkbox"] {
+  margin-top: 4px;
+  transform: scale(1.3);
+  accent-color: var(--secondary);
+}
+
+.job-info {
+  flex: 1;
+}
+
+.job-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.job-company {
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.job-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.job-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.search-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+#search-results-count {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.clear-filters-btn {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.clear-filters-btn:hover {
+  background: #e2e8f0;
+  color: #475569;
+  transform: translateY(-1px);
+}
+
+#bulk-bar {
+  position: fixed;
+  bottom: -100px;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 1rem 2rem;
+  z-index: 50;
+  transition: bottom 0.4s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+#bulk-bar.show {
+  bottom: 0;
+}
+
+main.bulk-bar-active {
+  padding-bottom: 140px; /* Extra space when bulk bar is visible */
+}
+
+.bulk-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.bulk-info span {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.bulk-info small {
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.primary-btn, .secondary-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.primary-btn {
+  background: white;
+  color: var(--primary);
+}
+
+.primary-btn:hover {
+  background: var(--secondary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+}
+
+/* Tracker Styles */
+.application-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.application-card:hover {
+  border-color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.application-info {
+  flex: 1;
+}
+
+.application-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.3rem;
+}
+
+.application-company {
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.application-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.application-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.application-status.sent {
+  background: #dbeafe;
+  color: var(--primary);
+}
+
+.application-status.pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.application-status.accepted {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.application-status.rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.no-applications {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+}
+
+.no-applications-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-applications h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.no-applications p {
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .alerts-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .checkbox-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .alerts-form-card, .alerts-preview-card {
+    padding: 1.5rem;
+  }
+  
+  .bulk-stats, .tracker-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .job-filters, .tracker-filters {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .filter-group {
+    margin-bottom: 0.5rem;
+  }
+  
+  .filter-group input, .filter-group select {
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
+  
+  .bulk-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .application-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .application-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .job-card {
+    padding: 1rem;
+    gap: 12px;
+  }
+  
+  .job-details {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  
+  .job-title {
+    font-size: 1rem;
+  }
+  
+  .job-company {
+    font-size: 0.9rem;
+  }
+  
+  .job-detail {
+    font-size: 0.8rem;
+  }
+  
+  .search-results-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .clear-filters-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .bulk-stats, .tracker-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .job-filters, .tracker-filters {
+    padding: 1rem;
+  }
+  
+  .filter-group label {
+    font-size: 0.85rem;
+  }
+  
+  .filter-group input, .filter-group select {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .job-card {
+    padding: 0.8rem;
+    gap: 10px;
+  }
+  
+  .job-card input[type="checkbox"] {
+    transform: scale(1.1);
+  }
+  
+  .bulk-bar {
+    padding: 0.8rem 1rem;
+  }
+  
+  .bulk-info span {
+    font-size: 1rem;
+  }
+  
+  .bulk-info small {
+    font-size: 0.7rem;
+  }
+  
+  .primary-btn, .secondary-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Job Seeker Dashboard</h1>
+    <nav>
+      <a href="#bulk-apply" class="active">Bulk Apply</a>
+      <a href="#application-tracker">Tracker</a>
+      <a href="#job-alerts">Alerts</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <!-- Bulk Apply Section -->
+  <section id="bulk-apply" class="active">
+    <div class="bulk-header">
+      <h2>🚀 Bulk Apply To Jobs</h2>
+      <p class="bulk-subtitle">Select multiple jobs and apply to them all at once</p>
+    </div>
+    
+    <div class="bulk-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <h3 id="total-jobs">0</h3>
+          <p>Total Jobs</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h3 id="selected-jobs">0</h3>
+          <p>Selected</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-content">
+          <h3 id="applied-jobs">0</h3>
+          <p>Applied</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="job-filters">
+      <div class="filter-group">
+        <label>🔍 Search Jobs:</label>
+        <input type="text" id="job-search" placeholder="Search by title, company, or location...">
+      </div>
+      <div class="filter-group">
+        <label>📍 Location:</label>
+        <select id="location-filter">
+          <option value="">All Locations</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>💼 Experience:</label>
+        <select id="experience-filter">
+          <option value="">All Levels</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="jobs-container">
+      <div class="search-results-header">
+        <span id="search-results-count">Loading jobs...</span>
+        <button id="clear-filters-btn" onclick="clearFilters()" class="clear-filters-btn" style="display: none;">
+          <span class="btn-icon">🔄</span>
+          Clear Filters
+        </button>
+      </div>
+      <div id="job-list">Loading jobs...</div>
+    </div>
+    
+    <div id="bulk-bar">
+      <div class="bulk-info">
+        <span id="bulk-count"></span>
+        <small>Maximum 30 jobs can be selected at once</small>
+      </div>
+      <div class="bulk-actions">
+        <button id="select-all-btn" class="secondary-btn">Select All</button>
+        <button id="bulk-btn" disabled>
+          <span class="btn-icon">📤</span>
+          Apply To Selected
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tracker Section -->
+  <section id="application-tracker">
+    <div class="tracker-header">
+      <h2>📋 Application Tracker</h2>
+      <p class="tracker-subtitle">Monitor the status of all your job applications</p>
+    </div>
+    
+    <div class="tracker-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📤</div>
+        <div class="stat-content">
+          <h3 id="total-applications">0</h3>
+          <p>Total Applications</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+          <h3 id="pending-applications">0</h3>
+          <p>Pending</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h3 id="accepted-applications">0</h3>
+          <p>Accepted</p>
+        </div>
+      </div>
+             <div class="stat-card">
+         <div class="stat-icon">❌</div>
+         <div class="stat-content">
+           <h3 id="rejected-applications">0</h3>
+           <p>Rejected</p>
+         </div>
+       </div>
+    </div>
+    
+    <div class="tracker-filters">
+      <div class="filter-group">
+        <label>📊 Filter by Status:</label>
+        <select id="status-filter">
+          <option value="">All Status</option>
+          <option value="Sent">📤 Sent</option>
+          <option value="Pending">⏳ Pending</option>
+          <option value="Accepted">✅ Accepted</option>
+          <option value="Rejected">❌ Rejected</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>📅 Sort by:</label>
+        <select id="sort-filter">
+          <option value="date">Date Applied</option>
+          <option value="company">Company</option>
+          <option value="title">Job Title</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="tracker-container">
+      <div id="tracker-content">
+        <div class="no-applications">
+          <div class="no-applications-icon">📋</div>
+          <h3>No Applications Yet</h3>
+          <p>Start applying to jobs to see them tracked here</p>
+          <button onclick="document.querySelector('a[href=\'#bulk-apply\']').click()" class="primary-btn">
+            🚀 Start Applying
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alerts Section -->
+  <section id="job-alerts">
+    <div class="alerts-header">
+      <h2>🔔 Job Alerts</h2>
+      <p class="alerts-subtitle">Stay updated with the latest job opportunities that match your profile</p>
+    </div>
+    
+    <div class="alerts-container">
+      <div class="alerts-form-card">
+        <h3>📧 Notification Preferences</h3>
+        <form id="alert-form">
+          <div class="form-group">
+            <label for="email-input">
+              <span class="label-icon">📧</span>
+              Email Address
+              <span class="required">*</span>
+            </label>
+            <input type="email" id="email-input" placeholder="your.email@example.com" required>
+            <small class="help-text">We'll send job alerts to this email address</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="whatsapp-input">
+              <span class="label-icon">📱</span>
+              WhatsApp Number
+            </label>
+            <input type="tel" id="whatsapp-input" placeholder="+91 98765 43210">
+            <small class="help-text">Optional: Get instant notifications on WhatsApp</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="freq-select">
+              <span class="label-icon">⏰</span>
+              Alert Frequency
+            </label>
+            <select id="freq-select">
+              <option value="instant">⚡ Instant - Get notified immediately</option>
+              <option value="daily">📅 Daily Digest - Once per day</option>
+              <option value="weekly">📊 Weekly Summary - Once per week</option>
+            </select>
+            <small class="help-text">Choose how often you want to receive alerts</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="job-types">
+              <span class="label-icon">🎯</span>
+              Job Categories
+            </label>
+            <div class="checkbox-group">
+              <label class="checkbox-item">
+                <input type="checkbox" value="tech" checked>
+                <span class="checkmark"></span>
+                💻 Technology
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" value="marketing">
+                <span class="checkmark"></span>
+                📈 Marketing
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" value="finance">
+                <span class="checkmark"></span>
+                💰 Finance
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" value="design">
+                <span class="checkmark"></span>
+                🎨 Design
+              </label>
+            </div>
+          </div>
+          
+          <button type="submit" class="save-alerts-btn">
+            <span class="btn-icon">💾</span>
+            Save Alert Preferences
+          </button>
+        </form>
+      </div>
+      
+      <div class="alerts-preview-card">
+        <h3>📋 Current Settings</h3>
+        <div id="alert-settings-preview" class="settings-preview">
+          <div class="no-settings">
+            <div class="no-settings-icon">🔔</div>
+            <p>No alert preferences set yet</p>
+            <small>Configure your preferences to start receiving job alerts</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="alert-confirm" class="alert-confirm"></div>
+  </section>
+</main>
+<script>
+// Navigation
+const sections = document.querySelectorAll('main > section');
+document.querySelectorAll('header nav a').forEach(link=>{
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelectorAll('header nav a').forEach(a=>a.classList.remove('active'));
+    link.classList.add('active');
+    sections.forEach(s=>s.classList.remove('active'));
+    document.querySelector(link.getAttribute('href')).classList.add('active');
+  });
+});
+
+// Globals
+let jobsSample = [];
+const BULK_LIMIT = 30;
+let selectedJobIds = new Set();
+const jobListElem = document.getElementById('job-list');
+const bulkBar = document.getElementById('bulk-bar');
+const bulkCountText = document.getElementById('bulk-count');
+const bulkBtn = document.getElementById('bulk-btn');
+
+// Load jobs from backend
+async function loadJobs(){
+  jobListElem.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">🔄 Loading jobs...</div>';
+  try {
+    const res = await fetch('http://127.0.0.1:8000/jobs?limit=50');
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    const data = await res.json();
+    
+    if (!data.jobs || data.jobs.length === 0) {
+      jobListElem.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">📭 No jobs available at the moment.</div>';
+      return;
+    }
+    
+    jobsSample = data.jobs.map((j,i)=>({
+      id: j.id ?? i,
+      title: j.roles || j.title || 'Job Title Not Available',
+      company: j.companies || j.company || 'Company Not Available',
+      location: j.locations || j.location || 'Location Not Available',
+      experience: j.experience || j.Experience || 'Experience Not Available',
+      salary: j.salaries || j.salary || 'Salary Not Available'
+    }));
+    
+    // Populate filter options
+    populateFilters();
+    renderJobList();
+    updateBulkBar();
+  } catch(e){
+    jobListElem.innerHTML = `<div style="text-align: center; padding: 20px; color: #e53e3e;">
+      ❌ Failed to load jobs.<br>
+      <small>Error: ${e.message}</small><br>
+      <button onclick="loadJobs()" style="margin-top: 10px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">🔄 Retry</button>
+    </div>`;
+    console.error('Job loading error:', e);
+  }
+}
+
+// Populate filter dropdowns
+function populateFilters() {
+  const locations = [...new Set(jobsSample.map(job => job.location).filter(loc => loc && loc !== 'Location not specified'))];
+  const experiences = [...new Set(jobsSample.map(job => job.experience).filter(exp => exp && exp !== 'Experience not specified'))];
+  
+  const locationFilter = document.getElementById('location-filter');
+  const experienceFilter = document.getElementById('experience-filter');
+  
+  // Clear existing options except the first one
+  locationFilter.innerHTML = '<option value="">All Locations</option>';
+  experienceFilter.innerHTML = '<option value="">All Levels</option>';
+  
+  // Add location options
+  locations.forEach(location => {
+    const option = document.createElement('option');
+    option.value = location;
+    option.textContent = location;
+    locationFilter.appendChild(option);
+  });
+  
+  // Add experience options
+  experiences.forEach(experience => {
+    const option = document.createElement('option');
+    option.value = experience;
+    option.textContent = experience;
+    experienceFilter.appendChild(option);
+  });
+}
+
+function renderJobList(){
+  const searchTerm = document.getElementById('job-search').value.toLowerCase();
+  const locationFilter = document.getElementById('location-filter').value;
+  const experienceFilter = document.getElementById('experience-filter').value;
+  
+  // Filter jobs based on search and filters
+  const filteredJobs = jobsSample.filter(job => {
+    const matchesSearch = !searchTerm || 
+      job.title.toLowerCase().includes(searchTerm) ||
+      job.company.toLowerCase().includes(searchTerm) ||
+      job.location.toLowerCase().includes(searchTerm);
+    
+    const matchesLocation = !locationFilter || job.location === locationFilter;
+    const matchesExperience = !experienceFilter || job.experience === experienceFilter;
+    
+    return matchesSearch && matchesLocation && matchesExperience;
+  });
+  
+  // Update search results count and clear filters button
+  const searchResultsCount = document.getElementById('search-results-count');
+  const clearFiltersBtn = document.getElementById('clear-filters-btn');
+  
+  const hasActiveFilters = searchTerm || locationFilter || experienceFilter;
+  
+  if (hasActiveFilters) {
+    searchResultsCount.textContent = `Found ${filteredJobs.length} job${filteredJobs.length !== 1 ? 's' : ''}`;
+    clearFiltersBtn.style.display = 'flex';
+  } else {
+    searchResultsCount.textContent = `Showing ${filteredJobs.length} job${filteredJobs.length !== 1 ? 's' : ''}`;
+    clearFiltersBtn.style.display = 'none';
+  }
+  
+  jobListElem.innerHTML = '';
+  
+  if (filteredJobs.length === 0) {
+    jobListElem.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: #666;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+        <h3 style="color: #333; margin-bottom: 0.5rem;">No jobs found</h3>
+        <p style="margin-bottom: 1rem;">Try adjusting your search criteria or filters</p>
+        <button onclick="clearFilters()" class="primary-btn" style="margin: 0 auto;">
+          <span class="btn-icon">🔄</span>
+          Clear Filters
+        </button>
+      </div>`;
+    updateStats();
+    return;
+  }
+  
+  filteredJobs.forEach(job=>{
+    const checked = selectedJobIds.has(String(job.id)) ? 'checked':'';
+    const disabled = (selectedJobIds.size>=BULK_LIMIT && !selectedJobIds.has(String(job.id))) ? 'disabled':'';
+    const selectedClass = selectedJobIds.has(String(job.id)) ? 'selected' : '';
+    jobListElem.innerHTML += `
+      <div class="job-card ${selectedClass}">
+        <input type="checkbox" data-id="${job.id}" ${checked} ${disabled}>
+        <div class="job-info">
+          <div class="job-title">${job.title}</div>
+          <div class="job-company">${job.company}</div>
+          <div class="job-details">
+            <div class="job-detail">📍 ${job.location||'Location not specified'}</div>
+            <div class="job-detail">💼 ${job.experience||'Experience not specified'}</div>
+            <div class="job-detail">💰 ${job.salary||'Salary not specified'}</div>
+          </div>
+        </div>
+      </div>`;
+  });
+  attachCheckEvents();
+  updateStats();
+}
+
+// Clear all filters
+function clearFilters() {
+  document.getElementById('job-search').value = '';
+  document.getElementById('location-filter').value = '';
+  document.getElementById('experience-filter').value = '';
+  renderJobList();
+}
+
+function attachCheckEvents(){
+  document.querySelectorAll('#job-list input[type="checkbox"]').forEach(cb=>{
+    cb.onchange=()=>{
+      const id = String(cb.dataset.id);
+      if(cb.checked){
+        if(selectedJobIds.size<BULK_LIMIT) {
+          selectedJobIds.add(id);
+        } else {
+          cb.checked=false; 
+          alert(`Maximum ${BULK_LIMIT} jobs can be selected at once.`);
+        }
+      } else {
+        selectedJobIds.delete(id);
+      }
+      updateBulkBar(); 
+      renderJobList();
+    };
+  });
+}
+
+function updateBulkBar(){
+  const mainElement = document.querySelector('main');
+  if(selectedJobIds.size>0){
+    bulkBar.classList.add('show');
+    mainElement.classList.add('bulk-bar-active');
+    bulkCountText.textContent = `Selected ${selectedJobIds.size}/${BULK_LIMIT}`;
+    bulkBtn.disabled=false;
+  } else {
+    bulkBar.classList.remove('show');
+    mainElement.classList.remove('bulk-bar-active');
+    bulkBtn.disabled=true;
+  }
+}
+
+bulkBtn.onclick=()=>{
+  let applied = JSON.parse(localStorage.getItem('appliedJobs')||'[]');
+  selectedJobIds.forEach(id=>{
+    const job = jobsSample.find(j=>String(j.id)===String(id));
+    if(job && !applied.some(a=>String(a.id)===String(id))){
+      applied.push({...job, dateApplied:new Date().toISOString().slice(0,10), status:'Sent'});
+    }
+  });
+  localStorage.setItem('appliedJobs', JSON.stringify(applied));
+  
+  // Show success notification
+  showNotification(`✅ Successfully applied to ${selectedJobIds.size} job(s)!`, 'success');
+  
+  selectedJobIds.clear();
+  updateBulkBar();
+  renderJobList();
+  renderTracker();
+};
+
+// Select All functionality
+document.getElementById('select-all-btn').onclick = () => {
+  const checkboxes = document.querySelectorAll('#job-list input[type="checkbox"]:not(:disabled)');
+  const allSelected = Array.from(checkboxes).every(cb => cb.checked);
+  
+  checkboxes.forEach(cb => {
+    cb.checked = !allSelected;
+    const id = String(cb.dataset.id);
+    if (!allSelected) {
+      if (selectedJobIds.size < BULK_LIMIT) {
+        selectedJobIds.add(id);
+      }
+    } else {
+      selectedJobIds.delete(id);
+    }
+  });
+  
+  updateBulkBar();
+  renderJobList();
+};
+
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    z-index: 1000;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+    background: ${type === 'success' ? 'linear-gradient(135deg, #38a169, #2f855a)' : 'linear-gradient(135deg, #e53e3e, #c53030)'};
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+  }, 100);
+  
+  setTimeout(() => {
+    notification.style.transform = 'translateX(400px)';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 4000);
+}
+
+function renderTracker(){
+  const trackerContent = document.getElementById('tracker-content');
+  let apps = JSON.parse(localStorage.getItem('appliedJobs')||'[]');
+  
+  if(!apps.length){
+    trackerContent.innerHTML = `
+      <div class="no-applications">
+        <div class="no-applications-icon">📋</div>
+        <h3>No Applications Yet</h3>
+        <p>Start applying to jobs to see them tracked here</p>
+        <button onclick="document.querySelector('a[href=\\'#bulk-apply\\']').click()" class="primary-btn">
+          🚀 Start Applying
+        </button>
+      </div>`;
+    updateTrackerStats();
+    return;
+  }
+  
+  trackerContent.innerHTML = '';
+  apps.forEach(app=>{
+    trackerContent.innerHTML += `
+      <div class="application-card">
+        <div class="application-info">
+          <div class="application-title">${app.title}</div>
+          <div class="application-company">${app.company}</div>
+          <div class="application-meta">
+            <span>📍 ${app.location}</span>
+            <span>📅 ${app.dateApplied}</span>
+          </div>
+        </div>
+        <div class="application-status ${app.status.toLowerCase()}">${app.status}</div>
+      </div>`;
+  });
+  updateTrackerStats();
+}
+
+function updateStats() {
+  document.getElementById('total-jobs').textContent = jobsSample.length;
+  document.getElementById('selected-jobs').textContent = selectedJobIds.size;
+  const appliedCount = JSON.parse(localStorage.getItem('appliedJobs')||'[]').length;
+  document.getElementById('applied-jobs').textContent = appliedCount;
+}
+
+function updateTrackerStats() {
+  const apps = JSON.parse(localStorage.getItem('appliedJobs')||'[]');
+  document.getElementById('total-applications').textContent = apps.length;
+  
+  const pendingCount = apps.filter(app => app.status === 'Pending').length;
+  const acceptedCount = apps.filter(app => app.status === 'Accepted').length;
+  const rejectedCount = apps.filter(app => app.status === 'Rejected').length;
+  
+  document.getElementById('pending-applications').textContent = pendingCount;
+  document.getElementById('accepted-applications').textContent = acceptedCount;
+  document.getElementById('rejected-applications').textContent = rejectedCount;
+}
+
+// Alerts
+document.getElementById('alert-form').onsubmit = e => {
+  e.preventDefault();
+  
+  const email = document.getElementById('email-input').value.trim();
+  const whatsapp = document.getElementById('whatsapp-input').value.trim();
+  const frequency = document.getElementById('freq-select').value;
+  
+  // Get selected job categories
+  const selectedCategories = [];
+  document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked').forEach(cb => {
+    selectedCategories.push(cb.value);
+  });
+  
+  const prefs = {
+    email: email,
+    whatsapp: whatsapp,
+    frequency: frequency,
+    categories: selectedCategories,
+    lastUpdated: new Date().toISOString()
+  };
+  
+  localStorage.setItem('alertPref', JSON.stringify(prefs));
+  showAlertConfirm('✅ Alert preferences saved successfully!', 'success');
+  showAlertPreview();
+  
+  // Reset form
+  document.getElementById('email-input').value = '';
+  document.getElementById('whatsapp-input').value = '';
+  document.getElementById('freq-select').value = 'instant';
+};
+
+function showAlertConfirm(message, type) {
+  const confirmDiv = document.getElementById('alert-confirm');
+  confirmDiv.textContent = message;
+  confirmDiv.className = `alert-confirm ${type} show`;
+  
+  setTimeout(() => {
+    confirmDiv.classList.remove('show');
+  }, 4000);
+}
+
+function showAlertPreview() {
+  const pref = JSON.parse(localStorage.getItem('alertPref') || '{}');
+  const previewDiv = document.getElementById('alert-settings-preview');
+  
+  if (!pref.email) {
+    previewDiv.innerHTML = `
+      <div class="no-settings">
+        <div class="no-settings-icon">🔔</div>
+        <p>No alert preferences set yet</p>
+        <small>Configure your preferences to start receiving job alerts</small>
+      </div>
+    `;
+    return;
+  }
+  
+  const frequencyText = {
+    'instant': '⚡ Instant notifications',
+    'daily': '📅 Daily digest',
+    'weekly': '📊 Weekly summary'
+  };
+  
+  const categoryIcons = {
+    'tech': '💻',
+    'marketing': '📈',
+    'finance': '💰',
+    'design': '🎨'
+  };
+  
+  let previewHTML = '';
+  
+  // Email setting
+  previewHTML += `
+    <div class="settings-item">
+      <div class="settings-item-icon">📧</div>
+      <div class="settings-item-content">
+        <h4>Email Notifications</h4>
+        <p>${pref.email}</p>
+      </div>
+    </div>
+  `;
+  
+  // WhatsApp setting
+  if (pref.whatsapp) {
+    previewHTML += `
+      <div class="settings-item">
+        <div class="settings-item-icon">📱</div>
+        <div class="settings-item-content">
+          <h4>WhatsApp Notifications</h4>
+          <p>${pref.whatsapp}</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Frequency setting
+  previewHTML += `
+    <div class="settings-item">
+      <div class="settings-item-icon">⏰</div>
+      <div class="settings-item-content">
+        <h4>Alert Frequency</h4>
+        <p>${frequencyText[pref.frequency] || 'Not set'}</p>
+      </div>
+    </div>
+  `;
+  
+  // Categories setting
+  if (pref.categories && pref.categories.length > 0) {
+    const categoryText = pref.categories.map(cat => 
+      `${categoryIcons[cat] || '📋'} ${cat.charAt(0).toUpperCase() + cat.slice(1)}`
+    ).join(', ');
+    
+    previewHTML += `
+      <div class="settings-item">
+        <div class="settings-item-icon">🎯</div>
+        <div class="settings-item-content">
+          <h4>Job Categories</h4>
+          <p>${categoryText}</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Last updated
+  if (pref.lastUpdated) {
+    const date = new Date(pref.lastUpdated).toLocaleDateString();
+    previewHTML += `
+      <div class="settings-item">
+        <div class="settings-item-icon">📅</div>
+        <div class="settings-item-content">
+          <h4>Last Updated</h4>
+          <p>${date}</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  previewDiv.innerHTML = previewHTML;
+}
+
+// Add event listeners for search and filters
+document.getElementById('job-search').addEventListener('input', renderJobList);
+document.getElementById('location-filter').addEventListener('change', renderJobList);
+document.getElementById('experience-filter').addEventListener('change', renderJobList);
+
+loadJobs();
+renderTracker();
+showAlertPreview();
+
+// Initialize stats on page load
+updateStats();
+updateTrackerStats();
+</script>
+</body>
+</html>

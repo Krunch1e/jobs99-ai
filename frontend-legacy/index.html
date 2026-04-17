@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jobs99.ai - AI-Powered Job Matching Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        danger: '#EF4444',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'bounce-in': 'bounceIn 0.8s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .file-upload-area {
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .job-card {
+            transition: all 0.3s ease;
+        }
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .ai-feature-card {
+            transition: all 0.4s ease;
+        }
+        .ai-feature-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50" data-aos="fade-down">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-primary">
+                            <i class="fas fa-robot mr-2"></i>Jobs99.ai
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#jobs" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Find Jobs</a>
+                        <a href="#ai-tools" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">AI Tools</a>
+                
+                         
+                     <a href="bulk.html" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Bulk Apply
+                    </a>
+                    <!-- ✅ New Employer Dashboard Link -->
+                    <a href="employer-dashboard.html" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Employer Dashboard
+                    </a>
+
+                     <a href="admin-dashboard.html" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Admin Dashboard
+                    </a>
+
+                   
+
+                    
+                        <a href=Signin.html class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center" data-aos="fade-up">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+                    Find Your Dream Job with 
+                    <span class="text-accent">AI Precision</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90 animate-slide-up">
+                    Upload your resume, get AI-powered job matches, and land your perfect role faster than ever
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-bounce-in">
+                    <button onclick="scrollToSection('ai-tools')" class="bg-accent text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-yellow-600 transition-all transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-magic mr-2"></i>Try AI Tools
+                    </button>
+                    <button onclick="scrollToSection('jobs')" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-primary transition-all">
+                        <i class="fas fa-search mr-2"></i>Browse Jobs
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Tools Section -->
+    <section id="ai-tools" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-brain text-primary mr-3"></i>AI-Powered Career Tools
+                </h2>
+                <p class="text-xl text-gray-600">Leverage artificial intelligence to supercharge your job search</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Resume Match Score -->
+                <div class="ai-feature-card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-center mb-6">
+                        <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Match Score</h3>
+                        <p class="text-gray-600 text-sm">Get AI-powered compatibility scores for any job</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="file-upload-area border-2 border-dashed border-primary rounded-lg p-4 text-center cursor-pointer" onclick="document.getElementById('match-resume').click()">
+                            <i class="fas fa-cloud-upload-alt text-primary text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Upload Resume</p>
+                            <input type="file" id="match-resume" class="hidden" accept=".pdf,.doc,.docx" onchange="handleResumeUpload(this, 'match')">
+                        </div>
+                        
+                        <input type="text" id="match-job-url" placeholder="Job URL or Description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        
+                        <button onclick="calculateMatchScore()" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition-colors flex items-center justify-center">
+                            <span id="match-btn-text">Calculate Match</span>
+                            <div id="match-loading" class="loading-spinner ml-2 hidden"></div>
+                        </button>
+                        
+                        <div id="match-result" class="hidden bg-green-50 border border-green-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-green-800">Match Score:</span>
+                                <span id="match-score" class="text-lg font-bold text-green-600"></span>
+                            </div>
+                            <div id="match-details" class="text-xs text-green-700 mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Tailoring -->
+                <div class="ai-feature-card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-center mb-6">
+                        <div class="bg-success text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-edit text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Resume Tailoring</h3>
+                        <p class="text-gray-600 text-sm">AI-optimized resume for specific jobs</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="file-upload-area border-2 border-dashed border-success rounded-lg p-4 text-center cursor-pointer" onclick="document.getElementById('tailor-resume').click()">
+                            <i class="fas fa-file-alt text-success text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Upload Resume</p>
+                            <input type="file" id="tailor-resume" class="hidden" accept=".pdf,.doc,.docx" onchange="handleResumeUpload(this, 'tailor')">
+                        </div>
+                        
+                        <input type="text" id="tailor-job-url" placeholder="Target Job URL" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-success focus:border-transparent">
+                        
+                        <button onclick="tailorResume()" class="w-full bg-success text-white py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center">
+                            <span id="tailor-btn-text">Tailor Resume</span>
+                            <div id="tailor-loading" class="loading-spinner ml-2 hidden"></div>
+                        </button>
+                        
+                        <div id="tailor-result" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-blue-800">Tailored Resume Ready!</span>
+                                <button onclick="downloadTailoredResume()" class="text-xs bg-blue-600 text-white px-2 py-1 rounded">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </button>
+                            </div>
+                            <div id="tailor-preview" class="text-xs text-blue-700 max-h-20 overflow-y-auto"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cover Letter Generator -->
+                <div class="ai-feature-card bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-center mb-6">
+                        <div class="bg-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-envelope text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Cover Letter</h3>
+                        <p class="text-gray-600 text-sm">AI-generated personalized cover letters</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="file-upload-area border-2 border-dashed border-purple-600 rounded-lg p-4 text-center cursor-pointer" onclick="document.getElementById('cover-resume').click()">
+                            <i class="fas fa-user-tie text-purple-600 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Upload Resume</p>
+                            <input type="file" id="cover-resume" class="hidden" accept=".pdf,.doc,.docx" onchange="handleResumeUpload(this, 'cover')">
+                        </div>
+                        
+                        <input type="text" id="cover-job-url" placeholder="Job URL" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                        
+                        <button onclick="generateCoverLetter()" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center">
+                            <span id="cover-btn-text">Generate Letter</span>
+                            <div id="cover-loading" class="loading-spinner ml-2 hidden"></div>
+                        </button>
+                        
+                        <div id="cover-result" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-yellow-800">Cover Letter Generated!</span>
+                                <button onclick="downloadCoverLetter()" class="text-xs bg-yellow-600 text-white px-2 py-1 rounded">
+                                    <i class="fas fa-download mr-1"></i>Download
+                                </button>
+                            </div>
+                            <div id="cover-preview" class="text-xs text-yellow-700 max-h-20 overflow-y-auto"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Upgrade -->
+                <div class="ai-feature-card bg-gradient-to-br from-yellow-50 to-orange-100 p-6 rounded-xl shadow-lg border-2 border-accent" data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-center mb-6">
+                        <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-crown text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Premium AI</h3>
+                        <p class="text-gray-600 text-sm">Unlock unlimited AI-powered features</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg p-3 border border-orange-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium">Pro Plan</span>
+                                <span class="text-lg font-bold text-accent">₹299/mo</span>
+                            </div>
+                            <ul class="text-xs text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Unlimited AI tools</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Priority support</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Advanced matching</li>
+                            </ul>
+                        </div>
+                        
+                        <button onclick="upgradeToPro()" class="w-full bg-accent text-white py-2 rounded-lg hover:bg-yellow-600 transition-colors font-semibold">
+                            <i class="fas fa-rocket mr-2"></i>Upgrade Now
+                        </button>
+                        
+                        <div class="bg-white rounded-lg p-3 border border-orange-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium">Pro Plus</span>
+                                <span class="text-lg font-bold text-accent">₹2499/mo</span>
+                            </div>
+                            <ul class="text-xs text-gray-600 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>All Pro features</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Career coaching</li>
+                                <li><i class="fas fa-check text-green-500 mr-1"></i>Job referrals</li>
+                            </ul>
+                        </div>
+                        
+                        <button onclick="upgradeToProPlus()" class="w-full bg-gradient-to-r from-accent to-orange-500 text-white py-2 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all font-semibold">
+                            <i class="fas fa-star mr-2"></i>Go Pro Plus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Search Section -->
+    <section id="jobs" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-briefcase text-primary mr-3"></i>Discover Your Next Opportunity
+                </h2>
+                <p class="text-xl text-gray-600">50,000+ jobs from India's top companies</p>
+            </div>
+
+            <!-- Search Filters -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="job-search" placeholder="Job title, skills, or company" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="relative">
+                            <i class="fas fa-map-marker-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <select id="job-location" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent appearance-none">
+                                <option value="">All Locations</option>
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Mumbai">Mumbai</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Pune">Pune</option>
+                                <option value="Remote">Remote</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="searchJobs()" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-secondary transition-colors font-semibold">
+                        <i class="fas fa-search mr-2"></i>Search Jobs
+                    </button>
+                </div>
+                
+                <!-- Job Type Filters -->
+                <div class="flex flex-wrap gap-4 mt-4 pt-4 border-t border-gray-200">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" class="job-filter mr-2 text-primary" value="remote" checked>
+                        <span class="text-sm text-gray-700">Remote</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" class="job-filter mr-2 text-primary" value="full-time" checked>
+                        <span class="text-sm text-gray-700">Full-time</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" class="job-filter mr-2 text-primary" value="part-time">
+                        <span class="text-sm text-gray-700">Part-time</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" class="job-filter mr-2 text-primary" value="contract">
+                        <span class="text-sm text-gray-700">Contract</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="jobs-loading" class="hidden text-center py-12">
+                <div class="loading-spinner mx-auto mb-4" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                <p class="text-gray-600">Finding the perfect jobs for you...</p>
+            </div>
+
+            <!-- Jobs Grid -->
+            <div id="jobs-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Jobs will be populated here -->
+            </div>
+
+            <!-- No Jobs Found -->
+            <div id="no-jobs" class="hidden text-center py-12">
+                <i class="fas fa-search text-gray-400 text-6xl mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">No jobs found</h3>
+                <p class="text-gray-600">Try adjusting your search criteria</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-4xl font-bold mb-2">50,000+</div>
+                    <div class="text-blue-200">Active Jobs</div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-4xl font-bold mb-2">1,000+</div>
+                    <div class="text-blue-200">Top Companies</div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-4xl font-bold mb-2">250,000+</div>
+                    <div class="text-blue-200">Job Seekers</div>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="400">
+                    <div class="text-4xl font-bold mb-2">95%</div>
+                    <div class="text-blue-200">Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-robot mr-2 text-primary"></i>Jobs99.ai
+                    </h3>
+                    <p class="text-gray-400 mb-4">AI-powered job matching platform helping you find your dream career.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#jobs" class="text-gray-400 hover:text-white transition-colors">Find Jobs</a></li>
+                        <li><a href="#ai-tools" class="text-gray-400 hover:text-white transition-colors">AI Tools</a></li>
+                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">AI Features</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Resume Matching</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Resume Tailoring</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cover Letters</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Career Coaching</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-envelope mr-2"></i>support@jobs99.ai</li>
+                        <li><i class="fas fa-phone mr-2"></i>+91 12345 67890</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>Bangalore, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Jobs99.ai. All rights reserved. Powered by AI.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="employer-dashboard.js"></script>
+</body>
+</html>

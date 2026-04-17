@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs99.ai - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-indigo-800 text-white shadow-lg">
+            <div class="p-4 border-b border-indigo-700">
+                <h1 class="text-2xl font-bold">
+                    <i class="fas fa-briefcase mr-2"></i>Jobs99.ai
+                </h1>
+                <p class="text-xs text-indigo-300 mt-1">Admin Dashboard</p>
+            </div>
+
+            <nav class="p-4">
+                <div class="mb-6">
+                    <h3 class="text-xs uppercase text-indigo-400 font-semibold mb-3">Main</h3>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700 active-nav-item"
+                                data-section="dashboard">
+                                <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xs uppercase text-indigo-400 font-semibold mb-3">Management</h3>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700" data-section="users">
+                                <i class="fas fa-users mr-3"></i> Users
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700"
+                                data-section="companies">
+                                <i class="fas fa-building mr-3"></i> Companies
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700" data-section="jobs">
+                                <i class="fas fa-list-alt mr-3"></i> Job Listings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xs uppercase text-indigo-400 font-semibold mb-3">System</h3>
+                    <ul>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700"
+                                data-section="payments">
+                                <i class="fas fa-credit-card mr-3"></i> Payments
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700"
+                                data-section="compliance">
+                                <i class="fas fa-shield-alt mr-3"></i> Compliance
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="flex items-center p-2 rounded hover:bg-indigo-700"
+                                data-section="scraper">
+                                <i class="fas fa-robot mr-3"></i> Scraper Status
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex justify-between items-center p-4">
+                    <div class="flex items-center">
+                        <button id="sidebar-toggle" class="mr-4 text-gray-600 lg:hidden">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="text-xl font-semibold" id="page-title">Dashboard Overview</h2>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button id="notifications-btn" class="p-2 rounded-full hover:bg-gray-100">
+                                <i class="fas fa-bell"></i>
+                                <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                            </button>
+                            <div id="notifications-dropdown"
+                                class="hidden absolute right-0 mt-2 w-64 bg-white rounded shadow-lg z-10">
+                                <div class="p-3 border-b">
+                                    <h3 class="font-semibold">Notifications</h3>
+                                </div>
+                                <div class="divide-y">
+                                    <a href="#" class="block p-3 hover:bg-gray-50">
+                                        <p class="text-sm">New crawl errors detected for Company #287</p>
+                                        <p class="text-xs text-gray-500">10 min ago</p>
+                                    </a>
+                                    <a href="#" class="block p-3 hover:bg-gray-50">
+                                        <p class="text-sm">Razorpay webhook failed - payment event</p>
+                                        <p class="text-xs text-gray-500">1 hour ago</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button id="profile-btn" class="flex items-center space-x-2">
+                                <img src="https://ui-avatars.com/api/?name=Admin+Raj&background=4f46e5&color=fff"
+                                    alt="Admin" class="w-8 h-8 rounded-full">
+                                <span class="hidden md:inline">Admin Raj</span>
+                            </button>
+                            <div id="profile-dropdown"
+                                class="hidden absolute right-0 mt-2 w-48 bg-white rounded shadow-lg z-10">
+                                <div class="p-3 border-b">
+                                    <p class="font-semibold">Admin Raj</p>
+                                    <p class="text-xs text-gray-500">Super Admin</p>
+                                </div>
+                                <div class="divide-y">
+                                    <a href="#" class="block p-2 hover:bg-gray-50">Profile Settings</a>
+                                    <a href="#" class="block p-2 hover:bg-gray-50">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="p-6">
+                <!-- Dashboard Overview Section (default view) -->
+                <section id="dashboard-section" class="section-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <!-- Stats Cards -->
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Total Users</p>
+                                    <h3 class="text-2xl font-bold">45,892</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up"></i> 12% from last week
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Active Jobs</p>
+                                    <h3 class="text-2xl font-bold">8,742</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up"></i> 5% from last week</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Companies</p>
+                                    <h3 class="text-2xl font-bold">1,024</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up"></i> 3% from last week</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">MRR</p>
+                                    <h3 class="text-2xl font-bold">₹1.2M</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                    <i class="fas fa-rupee-sign"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up"></i> 8% from last month
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Recent Activity -->
+                        <div class="bg-white p-6 rounded-lg shadow lg:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">Recent Activity</h3>
+                                <a href="#" class="text-sm text-indigo-600">View All</a>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="p-2 rounded-full bg-indigo-100 text-indigo-600 mr-3">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Weekly job refresh completed</p>
+                                        <p class="text-sm text-gray-500">Added 1,243 new jobs, removed 892 closed
+                                            positions</p>
+                                        <p class="text-xs text-gray-400">Today, 02:30 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="p-2 rounded-full bg-red-100 text-red-600 mr-3">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Crawl errors detected</p>
+                                        <p class="text-sm text-gray-500">Failed to scrape 12 company career pages</p>
+                                        <p class="text-xs text-gray-400">Today, 03:15 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                                        <i class="fas fa-credit-card"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Payment webhook failed</p>
+                                        <p class="text-sm text-gray-500">Razorpay subscription renewal event for user
+                                            #45892</p>
+                                        <p class="text-xs text-gray-400">Yesterday, 11:45 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-semibold mb-4">System Status</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">API Response Time</span>
+                                        <span class="text-sm">142ms</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Database Load</span>
+                                        <span class="text-sm">34%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-500 h-2 rounded-full" style="width: 34%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Storage</span>
+                                        <span class="text-sm">1.2TB/2TB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-500 h-2 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <h4 class="text-sm font-medium mb-2">Last Scrape</h4>
+                                <div class="flex items-center text-sm">
+                                    <span class="w-24">Success:</span>
+                                    <span class="font-medium">988/1000</span>
+                                </div>
+                                <div class="flex items-center text-sm">
+                                    <span class="w-24">Errors:</span>
+                                    <span class="font-medium text-red-500">12</span>
+                                </div>
+                                <div class="flex items-center text-sm">
+                                    <span class="w-24">Duration:</span>
+                                    <span class="font-medium">47m 12s</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Users -->
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">Recent Users</h3>
+                            <a href="#" class="text-sm text-indigo-600">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Name</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Email</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Plan</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Joined</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full"
+                                                        src="https://ui-avatars.com/api/?name=Arjun+Patel&background=4f46e5&color=fff"
+                                                        alt="">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Arjun Patel</div>
+                                                    <div class="text-sm text-gray-500">Job Seeker</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            arjun.patel@example.com</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Job
+                                                Seeker</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pro Monthly</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 hours ago</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full"
+                                                        src="https://ui-avatars.com/api/?name=Priya+Sharma&background=4f46e5&color=fff"
+                                                        alt="">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Priya Sharma</div>
+                                                    <div class="text-sm text-gray-500">Employer</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            priya.sharma@company.com</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Employer</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Growth Plan</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5 hours ago</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">View</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Users Management Section -->
+                <section id="users-section" class="section-content hidden">
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">User Management</h3>
+                            <div class="flex space-x-2">
+                                <input type="text" placeholder="Search users..."
+                                    class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    <i class="fas fa-plus mr-2"></i> Add User
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            User</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Email</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Last Active</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="users-table-body">
+                                    <!-- Users will be loaded here via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="text-sm text-gray-500">Showing 1 to 10 of 45,892 users</div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-600">&laquo;</button>
+                                <button class="px-3 py-1 border rounded-lg bg-indigo-600 text-white">1</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">2</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">3</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Companies Management Section -->
+                <section id="companies-section" class="section-content hidden">
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">Company Management</h3>
+                            <div class="flex space-x-2">
+                                <input type="text" placeholder="Search companies..."
+                                    class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    <i class="fas fa-plus mr-2"></i> Add Company
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Company</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Industry</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Jobs</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Plan</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Last Updated</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="companies-table-body">
+                                    <!-- Companies will be loaded here via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="text-sm text-gray-500">Showing 1 to 10 of 1,024 companies</div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-600">&laquo;</button>
+                                <button class="px-3 py-1 border rounded-lg bg-indigo-600 text-white">1</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">2</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">3</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Job Listings Section -->
+                <section id="jobs-section" class="section-content hidden">
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">Job Listings</h3>
+                            <div class="flex space-x-2">
+                                <select
+                                    class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>All Status</option>
+                                    <option>Active</option>
+                                    <option>Expired</option>
+                                </select>
+                                <input type="text" placeholder="Search jobs..."
+                                    class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    <i class="fas fa-plus mr-2"></i> Add Job
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Title</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Company</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Location</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Posted</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="jobs-table-body">
+                                    <!-- Jobs will be loaded here via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="text-sm text-gray-500">Showing 1 to 10 of 8,742 jobs</div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-600">&laquo;</button>
+                                <button class="px-3 py-1 border rounded-lg bg-indigo-600 text-white">1</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">2</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">3</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payments Section -->
+                <section id="payments-section" class="section-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-lg shadow lg:col-span-2">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-semibold">Recent Transactions</h3>
+                                <div class="flex space-x-2">
+                                    <select
+                                        class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option>Last 7 days</option>
+                                        <option>Last 30 days</option>
+                                        <option>Last 90 days</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                ID</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                User</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Plan</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Amount</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Status</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="payments-table-body">
+                                        <!-- Payments will be loaded here via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-4 flex justify-between items-center">
+                                <div class="text-sm text-gray-500">Showing 1 to 10 of 1,245 transactions</div>
+                                <div class="flex space-x-1">
+                                    <button
+                                        class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-600">&laquo;</button>
+                                    <button class="px-3 py-1 border rounded-lg bg-indigo-600 text-white">1</button>
+                                    <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">2</button>
+                                    <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">3</button>
+                                    <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">&raquo;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-semibold mb-4">Revenue Overview</h3>
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-600">MRR</span>
+                                    <span class="font-semibold">₹1,245,000</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">8% increase from last month</p>
+                            </div>
+                            <div class="mb-6">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-600">ARR</span>
+                                    <span class="font-semibold">₹14,940,000</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">12% increase from last quarter</p>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Job Seeker Plans</span>
+                                    <span class="font-semibold">₹345,000</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Employer Plans</span>
+                                    <span class="font-semibold">₹900,000</span>
+                                </div>
+                                <div class="flex justify-between border-t pt-2">
+                                    <span class="text-gray-600">Total</span>
+                                    <span class="font-semibold">₹1,245,000</span>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <h4 class="text-sm font-medium mb-2">Failed Webhooks (Last 7 days)</h4>
+                                <div class="bg-red-50 p-3 rounded-lg">
+                                    <div class="flex justify-between text-sm">
+                                        <span>Count:</span>
+                                        <span class="font-medium text-red-600">12</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>Last Occurrence:</span>
+                                        <span class="font-medium">Today, 03:15 AM</span>
+                                    </div>
+                                    <button
+                                        class="mt-2 w-full py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Compliance Section -->
+                <section id="compliance-section" class="section-content hidden">
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">Compliance Requests</h3>
+                            <div class="flex space-x-2">
+                                <select
+                                    class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>All Types</option>
+                                    <option>Data Access</option>
+                                    <option>Data Deletion</option>
+                                </select>
+                                <select
+                                    class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>All Status</option>
+                                    <option>Pending</option>
+                                    <option>Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Request ID</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            User</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Submitted</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="compliance-table-body">
+                                    <!-- Compliance requests will be loaded here via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="text-sm text-gray-500">Showing 1 to 5 of 23 requests</div>
+                            <div class="flex space-x-1">
+                                <button class="px-3 py-1 border rounded-lg bg-gray-100 text-gray-600">&laquo;</button>
+                                <button class="px-3 py-1 border rounded-lg bg-indigo-600 text-white">1</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">2</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">3</button>
+                                <button class="px-3 py-1 border rounded-lg hover:bg-gray-100">&raquo;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="font-semibold mb-4">GDPR/DPDPB Compliance Dashboard</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div class="border rounded-lg p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium text-gray-600">Data Access Requests</h4>
+                                        <p class="text-2xl font-bold mt-1">18</p>
+                                    </div>
+                                    <div class="p-2 rounded-full bg-blue-100 text-blue-600">
+                                        <i class="fas fa-download"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">5 pending fulfillment</p>
+                            </div>
+                            <div class="border rounded-lg p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium text-gray-600">Data Deletion Requests</h4>
+                                        <p class="text-2xl font-bold mt-1">5</p>
+                                    </div>
+                                    <div class="p-2 rounded-full bg-red-100 text-red-600">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">2 pending verification</p>
+                            </div>
+                            <div class="border rounded-lg p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h4 class="font-medium text-gray-600">Average Resolution Time</h4>
+                                        <p class="text-2xl font-bold mt-1">2.4 days</p>
+                                    </div>
+                                    <div class="p-2 rounded-full bg-green-100 text-green-600">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2">Within SLA target</p>
+                            </div>
+                        </div>
+                        <div class="border rounded-lg p-4">
+                            <h4 class="font-medium mb-3">Recent Audit Log</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <div class="p-2 rounded-full bg-gray-100 text-gray-600 mr-3">
+                                        <i class="fas fa-user-cog"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Admin Raj processed data deletion request #DR-4582</p>
+                                        <p class="text-sm text-gray-500">Today, 09:30 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="p-2 rounded-full bg-gray-100 text-gray-600 mr-3">
+                                        <i class="fas fa-file-export"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">System generated data access package for user #45892</p>
+                                        <p class="text-sm text-gray-500">Yesterday, 11:45 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Scraper Status Section -->
+                <section id="scraper-section" class="section-content hidden">
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">Scraper Monitoring</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    <i class="fas fa-sync-alt mr-2"></i> Run Now
+                                </button>
+                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">Last Run Status</h4>
+                                <span
+                                    class="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">Completed</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="border rounded-lg p-3">
+                                    <p class="text-sm text-gray-500">Start Time</p>
+                                    <p class="font-medium">Today, 02:00 AM</p>
+                                </div>
+                                <div class="border rounded-lg p-3">
+                                    <p class="text-sm text-gray-500">Duration</p>
+                                    <p class="font-medium">47m 12s</p>
+                                </div>
+                                <div class="border rounded-lg p-3">
+                                    <p class="text-sm text-gray-500">Success Rate</p>
+                                    <p class="font-medium">98.8%</p>
+                                </div>
+                                <div class="border rounded-lg p-3">
+                                    <p class="text-sm text-gray-500">Next Run</p>
+                                    <p class="font-medium">Mon, 02:00 AM</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">Error Details</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Company ID</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Company Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Error Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Error Message</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="scraper-errors-table-body">
+                                        <!-- Scraper errors will be loaded here via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-medium mb-3">Scraper Statistics</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="border rounded-lg p-4">
+                                    <h5 class="text-sm font-medium text-gray-500 mb-2">Jobs Added</h5>
+                                    <p class="text-2xl font-bold">1,243</p>
+                                    <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                        <div class="h-2 bg-green-500 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="border rounded-lg p-4">
+                                    <h5 class="text-sm font-medium text-gray-500 mb-2">Jobs Removed</h5>
+                                    <p class="text-2xl font-bold">892</p>
+                                    <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                        <div class="h-2 bg-blue-500 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <div class="border rounded-lg p-4">
+                                    <h5 class="text-sm font-medium text-gray-500 mb-2">Jobs Flagged (30+ days)</h5>
+                                    <p class="text-2xl font-bold">327</p>
+                                    <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                        <div class="h-2 bg-yellow-500 rounded-full" style="width: 22%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle sidebar on mobile
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.querySelector('aside');
+
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function () {
+                    sidebar.classList.toggle('hidden');
+                });
+            }
+
+            // Navigation between sections
+            function setupNavigation() {
+                const navLinks = document.querySelectorAll('nav a[data-section]');
+                const sections = document.querySelectorAll('.section-content');
+                const pageTitle = document.getElementById('page-title');
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        // Remove active class from all links
+                        document.querySelectorAll('nav a').forEach(navLink => {
+                            navLink.classList.remove('bg-indigo-700');
+                            navLink.classList.remove('text-white');
+                        });
+
+                        // Add active class to clicked link
+                        this.classList.add('bg-indigo-700');
+                        this.classList.add('text-white');
+
+                        // Hide all sections
+                        sections.forEach(section => {
+                            section.classList.add('hidden');
+                        });
+
+                        // Show the selected section
+                        const sectionId = this.getAttribute('data-section') + '-section';
+                        const targetSection = document.getElementById(sectionId);
+                        if (targetSection) {
+                            targetSection.classList.remove('hidden');
+
+                            // Update page title
+                            const linkText = this.textContent.trim();
+                            const icon = this.querySelector('i')?.cloneNode(true);
+
+                            // Clear and rebuild title with icon if available
+                            if (pageTitle) {
+                                pageTitle.innerHTML = '';
+                                if (icon) pageTitle.appendChild(icon);
+                                pageTitle.appendChild(document.createTextNode(' ' + linkText));
+                            }
+                        }
+                    });
+                });
+
+                // Activate the first nav item by default
+                if (navLinks.length > 0) {
+                    navLinks[0].click();
+                }
+            }
+
+            // Toggle dropdowns
+            function setupDropdowns() {
+                const notificationsBtn = document.getElementById('notifications-btn');
+                const notificationsDropdown = document.getElementById('notifications-dropdown');
+                const profileBtn = document.getElementById('profile-btn');
+                const profileDropdown = document.getElementById('profile-dropdown');
+
+                if (notificationsBtn && notificationsDropdown) {
+                    notificationsBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        notificationsDropdown.classList.toggle('hidden');
+                        if (profileDropdown) profileDropdown.classList.add('hidden');
+                    });
+                }
+
+                if (profileBtn && profileDropdown) {
+                    profileBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        profileDropdown.classList.toggle('hidden');
+                        if (notificationsDropdown) notificationsDropdown.classList.add('hidden');
+                    });
+                }
+
+                // Close dropdowns when clicking outside
+                document.addEventListener('click', function () {
+                    if (notificationsDropdown) notificationsDropdown.classList.add('hidden');
+                    if (profileDropdown) profileDropdown.classList.add('hidden');
+                });
+            }
+
+            // Setup action buttons
+            function setupActionButtons() {
+                // View All buttons
+                document.querySelectorAll('[data-action="view-all"]').forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = this.getAttribute('data-target');
+                        if (target) {
+                            // Hide all sections first
+                            document.querySelectorAll('.section-content').forEach(section => {
+                                section.classList.add('hidden');
+                            });
+
+                            // Show target section
+                            const targetSection = document.getElementById(target);
+                            if (targetSection) {
+                                targetSection.classList.remove('hidden');
+
+                                // Update active nav item
+                                const sectionName = target.replace('-section', '');
+                                const navLink = document.querySelector(`nav a[data-section="${sectionName}"]`);
+                                if (navLink) {
+                                    navLink.click();
+                                }
+                            }
+                        }
+                    });
+                });
+
+                // Table action buttons
+                document.querySelectorAll('.action-btn').forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const action = this.getAttribute('data-action');
+                        const itemId = this.getAttribute('data-id');
+
+                        console.log(`Action: ${action} on item ${itemId}`);
+
+                        // Add your specific action handling here
+                        switch (action) {
+                            case 'view':
+                                alert(`Viewing item ${itemId}`);
+                                break;
+                            case 'edit':
+                                alert(`Editing item ${itemId}`);
+                                break;
+                            case 'delete':
+                                if (confirm(`Are you sure you want to delete item ${itemId}?`)) {
+                                    alert(`Deleted item ${itemId}`);
+                                }
+                                break;
+                            default:
+                                console.log('Unknown action', action);
+                        }
+                    });
+                });
+
+                // Add buttons in tables
+                document.querySelectorAll('.add-btn').forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = this.getAttribute('data-target');
+                        alert(`Add new ${target}`);
+                    });
+                });
+
+                // Pagination buttons
+                document.querySelectorAll('.pagination-btn').forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const page = this.textContent.trim();
+                        alert(`Navigating to page ${page}`);
+                    });
+                });
+            }
+
+            // Initialize all functions
+            setupNavigation();
+            setupDropdowns();
+            setupActionButtons();
+
+            // Sample data loading for tables
+            loadUsersTable();
+            loadCompaniesTable();
+            loadJobsTable();
+            loadPaymentsTable();
+            loadComplianceTable();
+            loadScraperErrorsTable();
+        });
+
+        // Table loading functions
+        function loadUsersTable() {
+            // Sample data - in a real app, this would come from an API
+            const users = [
+                {
+                    id: 1,
+                    name: "Rahul Sharma",
+                    email: "rahul.sharma@example.com",
+                    type: "Job Seeker",
+                    status: "Active",
+                    lastActive: "2 hours ago",
+                    avatar: "Rahul+Sharma"
+                },
+                {
+                    id: 2,
+                    name: "Neha Patel",
+                    email: "neha.patel@company.com",
+                    type: "Employer",
+                    status: "Active",
+                    lastActive: "1 day ago",
+                    avatar: "Neha+Patel"
+                }
+            ];
+
+            const tableBody = document.getElementById('users-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = users.map(user => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name=${user.avatar}&background=4f46e5&color=fff" alt="${user.name}">
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${user.name}</div>
+                                    <div class="text-sm text-gray-500">${user.type}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.type === 'Job Seeker' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">${user.type}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">${user.status}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.lastActive}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3 action-btn" data-action="view" data-id="${user.id}">View</a>
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3 action-btn" data-action="edit" data-id="${user.id}">Edit</a>
+                            <a href="#" class="text-red-600 hover:text-red-900 action-btn" data-action="delete" data-id="${user.id}">Delete</a>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadCompaniesTable() {
+            // Sample data - in a real app, this would come from an API
+            const companies = [
+                {
+                    id: 1,
+                    name: "Tech Solutions Inc.",
+                    industry: "Information Technology",
+                    jobs: 42,
+                    plan: "Enterprise",
+                    lastUpdated: "3 hours ago",
+                    avatar: "Tech+Solutions"
+                },
+                {
+                    id: 2,
+                    name: "Global Finance",
+                    industry: "Financial Services",
+                    jobs: 18,
+                    plan: "Professional",
+                    lastUpdated: "1 day ago",
+                    avatar: "Global+Finance"
+                }
+            ];
+
+            const tableBody = document.getElementById('companies-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = companies.map(company => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name=${company.avatar}&background=4f46e5&color=fff" alt="${company.name}">
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${company.name}</div>
+                                    <div class="text-sm text-gray-500">${company.industry}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.industry}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.jobs}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.plan}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.lastUpdated}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3 action-btn" data-action="view" data-id="${company.id}">View</a>
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 action-btn" data-action="edit" data-id="${company.id}">Edit</a>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadJobsTable() {
+            // Sample data - in a real app, this would come from an API
+            const jobs = [
+                {
+                    id: 1,
+                    title: "Senior Software Engineer",
+                    company: "Tech Solutions Inc.",
+                    location: "Bangalore, India",
+                    posted: "2 days ago",
+                    status: "Active"
+                },
+                {
+                    id: 2,
+                    title: "Financial Analyst",
+                    company: "Global Finance",
+                    location: "Mumbai, India",
+                    posted: "1 week ago",
+                    status: "Active"
+                }
+            ];
+
+            const tableBody = document.getElementById('jobs-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = jobs.map(job => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${job.title}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${job.company}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${job.location}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${job.posted}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${job.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${job.status}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3 action-btn" data-action="view" data-id="${job.id}">View</a>
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 action-btn" data-action="edit" data-id="${job.id}">Edit</a>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadPaymentsTable() {
+            // Sample data - in a real app, this would come from an API
+            const payments = [
+                {
+                    id: "PY-12345",
+                    user: "Arjun Patel",
+                    plan: "Pro Monthly",
+                    amount: "₹999",
+                    status: "Completed",
+                    date: "Today, 09:30 AM"
+                },
+                {
+                    id: "PY-12344",
+                    user: "Priya Sharma",
+                    plan: "Growth Plan",
+                    amount: "₹4,999",
+                    status: "Completed",
+                    date: "Yesterday, 11:45 PM"
+                }
+            ];
+
+            const tableBody = document.getElementById('payments-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = payments.map(payment => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${payment.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${payment.user}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${payment.plan}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${payment.amount}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${payment.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${payment.status}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${payment.date}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadComplianceTable() {
+            // Sample data - in a real app, this would come from an API
+            const requests = [
+                {
+                    id: "DR-4582",
+                    user: "Arjun Patel",
+                    type: "Data Deletion",
+                    submitted: "2 days ago",
+                    status: "Completed"
+                },
+                {
+                    id: "DA-4581",
+                    user: "Priya Sharma",
+                    type: "Data Access",
+                    submitted: "3 days ago",
+                    status: "Pending"
+                }
+            ];
+
+            const tableBody = document.getElementById('compliance-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = requests.map(request => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${request.id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.user}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.type}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.submitted}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${request.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${request.status}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 action-btn" data-action="view" data-id="${request.id}">Details</a>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadScraperErrorsTable() {
+            // Sample data - in a real app, this would come from an API
+            const errors = [
+                {
+                    id: 1,
+                    companyId: "287",
+                    companyName: "TechCorp Ltd",
+                    errorType: "Timeout",
+                    errorMessage: "Request timed out after 30 seconds"
+                },
+                {
+                    id: 2,
+                    companyId: "312",
+                    companyName: "Innovate Solutions",
+                    errorType: "404",
+                    errorMessage: "Career page not found"
+                }
+            ];
+
+            const tableBody = document.getElementById('scraper-errors-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = errors.map(error => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${error.companyId}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${error.companyName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${error.errorType}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${error.errorMessage}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 action-btn" data-action="view" data-id="${error.id}">View</a>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+
+</html>

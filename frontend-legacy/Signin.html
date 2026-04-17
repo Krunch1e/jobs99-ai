@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 1rem;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 70%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo h1 {
+            color: #5a67d8;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .logo p {
+            color: #718096;
+            font-size: 0.85rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-toggle {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 4px;
+            position: relative;
+        }
+
+        .toggle-option {
+            flex: 1;
+            padding: 0.6rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            color: #718096;
+            position: relative;
+            z-index: 2;
+        }
+
+        .toggle-option:hover:not(.active) {
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .toggle-option.active {
+            color: white;
+        }
+
+        .toggle-option.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .toggle-slider.signin {
+            transform: translateX(0);
+        }
+
+        .toggle-slider.signup {
+            transform: translateX(100%);
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeInSlide 0.5s ease-out;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .user-type-selection {
+            margin-bottom: 1rem;
+        }
+
+        .user-type-selection.error {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .user-type-selection h3 {
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .required-field::after {
+            content: ' *';
+            color: #e53e3e;
+            font-weight: bold;
+        }
+
+        .user-types {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-type {
+            flex: 1;
+            padding: 0.8rem 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .user-type:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .user-type.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .user-type i {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .user-type span {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .user-type-description {
+            font-size: 0.75rem;
+            color: #718096;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group.password-group input {
+            padding-right: 3rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #a0aec0;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .password-toggle.active {
+            color: #667eea;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 0.9rem;
+            left: 0.9rem;
+            color: #a0aec0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -0.4rem;
+            left: 0.7rem;
+            font-size: 0.75rem;
+            color: #667eea;
+            background: white;
+            padding: 0 0.4rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #4a5568;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .social-divider {
+            text-align: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .social-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+            z-index: -1;
+        }
+
+        .social-divider span {
+            background: white;
+            padding: 0 0.8rem;
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.85rem;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+                max-height: 95vh;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .user-types {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .logo {
+                margin-bottom: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .user-type-selection {
+                margin-bottom: 0.8rem;
+            }
+        }
+
+        /* Ripple effect styles */
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        .submit-btn, .social-btn, .user-type {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="logo">
+            <h1>Welcome</h1>
+            <p>Your gateway to seamless collaboration</p>
+        </div>
+
+        <div class="form-toggle">
+            <div class="toggle-slider signin" id="toggleSlider"></div>
+            <div class="toggle-option active" data-form="signin">Sign In</div>
+            <div class="toggle-option" data-form="signup">Sign Up</div>
+        </div>
+
+        <!-- Sign In Form -->
+        <div class="form-section active" id="signinForm">
+            <form id="signinFormElement">
+                <div class="form-group">
+                    <input type="email" placeholder=" " required>
+                    <label>Email Address</label>
+                </div>
+                <div class="form-group password-group">
+                    <input type="password" placeholder=" " required>
+                    <label>Password</label>
+                    <span class="password-toggle" onclick="togglePassword(this)">👁️</span>
+                </div>
+                <button type="submit" class="submit-btn">Sign In</button>
+            </form>
+            
+            <div class="social-divider">
+                <span>or continue with</span>
+            </div>
+            
+            <div class="social-login">
+                <button class="social-btn" type="button">
+                    <span>🔍</span> Google
+                </button>
+                <button class="social-btn" type="button">
+                    <span>🔷</span> Microsoft
+                </button>
+            </div>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div class="form-section" id="signupForm">
+            <div class="user-type-selection">
+                <h3 class="required-field">Choose your account type</h3>
+                <div class="user-types">
+                    <div class="user-type" data-type="employer">
+                        <i>👨‍💼</i>
+                        <span>EMPLOYER</span>
+                    </div>
+                    <div class="user-type" data-type="jobseeker">
+                        <i>🔍</i>
+                        <span>JOB SEEKER</span>
+                    </div>
+                </div>
+                <div class="user-type-description">
+                    This selection determines your dashboard layout and available features (Employer or Job Seeker)
+                </div>
+            </div>
+
+            <form id="signupFormElement">
+                <div class="form-group">
+                    <input type="text" placeholder=" " required>
+                    <label>Full Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder=" " required>
+                    <label>Email Address</label>
+                </div>
+                <div class="form-group password-group">
+                    <input type="password" placeholder=" " required>
+                    <label>Password</label>
+                    <span class="password-toggle" onclick="togglePassword(this)">👁️</span>
+                </div>
+                <div class="form-group password-group">
+                    <input type="password" placeholder=" " required>
+                    <label>Confirm Password</label>
+                    <span class="password-toggle" onclick="togglePassword(this)">👁️</span>
+                </div>
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+            
+            <div class="social-divider">
+                <span>or sign up with</span>
+            </div>
+            
+            <div class="social-login">
+                <button class="social-btn" type="button">
+                    <span>🔍</span> Google
+                </button>
+                <button class="social-btn" type="button">
+                    <span>🔷</span> Microsoft
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Processing your request...</div>
+            <div class="loading-subtext">Please wait while we set up your account</div>
+        </div>
+    </div>
+
+    <script>
+    // IMPORTANT: Replace with your actual Supabase URL and Key
+    const SUPABASE_URL = 'https://ttzpphebjmjbrdioixeg.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0enBwaGViam1qYnJkaW9peGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NjU0MDksImV4cCI6MjA3MTU0MTQwOX0._rmtTbys5s0qqncMHWnyyKlpz-KzU0hhhweLpS-Fc0c';
+
+    const { createClient } = supabase;
+    const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // --- Form UI Logic ---
+    const toggleOptions = document.querySelectorAll('.toggle-option');
+    const toggleSlider = document.getElementById('toggleSlider');
+    const formSections = document.querySelectorAll('.form-section');
+
+    toggleOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const formType = option.getAttribute('data-form');
+            toggleOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            toggleSlider.className = `toggle-slider ${formType}`;
+            formSections.forEach(section => section.classList.remove('active'));
+            document.getElementById(`${formType}Form`).classList.add('active');
+        });
+    });
+
+    const userTypes = document.querySelectorAll('.user-type');
+    let selectedUserType = null;
+    userTypes.forEach(type => {
+        type.addEventListener('click', () => {
+            userTypes.forEach(t => t.classList.remove('selected'));
+            type.classList.add('selected');
+            selectedUserType = type.getAttribute('data-type');
+        });
+    });
+
+    // --- Authentication Logic ---
+
+    // 1. Sign In with Email and Password
+    const signinForm = document.getElementById('signinFormElement');
+    signinForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = signinForm.querySelector('input[type="email"]').value;
+        const password = signinForm.querySelector('input[type="password"]').value;
+
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            showErrorMessage(error.message);
+        } else {
+            showSuccessMessage('Signed in successfully! Redirecting...');
+            // You can redirect to a dashboard page here
+            setTimeout(() => { window.location.href = '/'; }, 1500);
+        }
+    });
+
+    // 2. Sign Up with Email and Password
+    const signupForm = document.getElementById('signupFormElement');
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!selectedUserType) {
+            showErrorMessage('Please select an account type (Employer or Job Seeker).');
+            return;
+        }
+
+        const fullName = signupForm.querySelector('input[type="text"]').value;
+        const email = signupForm.querySelector('input[type="email"]').value;
+        const password = signupForm.querySelectorAll('input[type="password"]')[0].value;
+        const confirmPassword = signupForm.querySelectorAll('input[type="password"]')[1].value;
+
+        if (password !== confirmPassword) {
+            showErrorMessage('Passwords do not match.');
+            return;
+        }
+
+        // Call our backend endpoint
+        const response = await fetch('/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email,
+                password,
+                full_name: fullName,
+                account_type: selectedUserType
+            })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            showSuccessMessage(result.message);
+            signupForm.reset();
+        } else {
+            showErrorMessage(result.error || 'An error occurred during sign-up.');
+        }
+    });
+
+    // 3. Sign In with Google
+    async function signInWithGoogle() {
+        const { data, error } = await _supabase.auth.signInWithOAuth({
+            provider: 'google',
+        });
+        if (error) {
+            showErrorMessage('Error signing in with Google: ' + error.message);
+        }
+    }
+
+    // Attach OAuth handlers to buttons
+    document.querySelectorAll('.social-btn').forEach(btn => {
+        if (btn.textContent.includes('Google')) {
+            btn.addEventListener('click', signInWithGoogle);
+        } else if (btn.textContent.includes('Microsoft')) {
+            // We are skipping Microsoft, so we'll hide the button
+            btn.style.display = 'none';
+        }
+    });
+
+    // --- Helper Functions ---
+    function showErrorMessage(message) {
+        alert(`Error: ${message}`);
+    }
+
+    function showSuccessMessage(message) {
+        alert(`Success: ${message}`);
+    }
+</script>
+
+</body>
+</html>

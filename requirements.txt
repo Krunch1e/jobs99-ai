@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+openai
+spacy
+pdfplumber
+scikit-learn
+python-multipart
+python-dotenv
+PyMuPDF
+ollama
+pandas
+stripe
+sqlalchemy
+psycopg2-binary
+pydantic
+requests
