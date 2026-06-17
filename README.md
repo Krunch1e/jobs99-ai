@@ -195,22 +195,18 @@ Ensure Ollama is installed and running locally if AI-powered resume processing, 
 
 ## Project Ownership
 
-This repository is maintained as a portfolio fork to showcase my contributions to the Jobs99.ai project.
+This repository is a portfolio fork of the original collaborative Jobs99.ai project.
 
-The original platform was developed collaboratively by multiple contributors as part of the Synergy Labs training program.
+The original platform was developed by multiple contributors during the Synergy Labs training program.
 
-My fork highlights the areas where I contributed, including backend development, API integration, payment workflows, AI integration support, debugging, and system integration activities.
+My fork highlights the areas where I contributed, including backend development, API integration, payment workflows, AI feature integration support, debugging, and system integration activities.
 
 ---
 
-## Future Enhancements
+## Project Status
 
-Planned and ongoing improvements include:
+This repository is preserved as a portfolio and learning project.
 
-* AI-powered resume analysis
-* Advanced job matching algorithms
-* Resume tailoring workflows
-* Automated cover letter generation
-* Employer recruitment dashboard enhancements
-* Improved job aggregation pipelines
-* Expanded subscription and premium features
+Jobs99.ai was developed as part of the Synergy Labs training program and is no longer actively maintained or deployed.
+
+The repository remains available to demonstrate the platform architecture, backend development work, API integrations, AI-assisted recruitment features, and my contributions to the project.
